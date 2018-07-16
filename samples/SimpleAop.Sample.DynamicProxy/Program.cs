@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading.Tasks;
 using SimpleAop.Proxies;
 
 namespace SimpleAop.Sample.DynamicProxy
@@ -28,6 +29,12 @@ namespace SimpleAop.Sample.DynamicProxy
                 }
                 
                 m.IL.Emit(OpCodes.Ldarg_0);
+
+                for (var i = 1; i <= method.GetParameters().Length; i++)
+                {
+                    m.IL.Emit(OpCodes.Ldarg, i);
+                }
+                
                 m.IL.Emit(OpCodes.Call, method);
 
                 if (method.ReturnType != typeof(void))
@@ -40,11 +47,12 @@ namespace SimpleAop.Sample.DynamicProxy
             }
 
             var type = @class.ReleaseType();
-            var obj = Activator.CreateInstance(type);
-            var proxyMethod = obj.GetType().GetMethod("GetString");
-            var result = proxyMethod.Invoke(obj, null);
+            var obj = (TestClass)Activator.CreateInstance(type);
+            obj.Print();
             
-            Console.WriteLine($"--- {result ?? "(null)"} ---");
+            ((ITestClass)new ProxyTestClass()).GetString();
+            
+            //Console.WriteLine($"--- {result ?? "(null)"} ---");
         }
     }
 }

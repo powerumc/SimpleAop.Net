@@ -4,17 +4,23 @@ namespace SimpleAop
 {
     public delegate void AspectInvocationDelegate();
     
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = true, Inherited = false)]
-    public class OnMethodBoundAspectAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property)]
+    public abstract class OnMethodBoundAspectAttribute : Attribute
     {
-        public virtual void OnEnter(IAspectInvocation aspectInvocation, AspectInvocationDelegate next)
+        public abstract void OnBefore(IAspectInvocation invocation);
+        public abstract void OnAfter(IAspectInvocation invocation);
+    }
+
+    public class LoggingAspectAttribute : OnMethodBoundAspectAttribute
+    {
+        public override void OnBefore(IAspectInvocation invocation)
         {
-            next();
+            Console.WriteLine("--- Before ---");
         }
 
-        public virtual void OnException(Exception exception)
+        public override void OnAfter(IAspectInvocation invocation)
         {
-            
+            Console.WriteLine("--- After ---");
         }
     }
 }
