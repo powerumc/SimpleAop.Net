@@ -5,7 +5,7 @@ using SimpleAop.Proxies.Statments;
 
 namespace SimpleAop.Proxies.Operands
 {
-    internal class LocalOperand :
+    public class LocalOperand :
         Operand,
         IValuable<LocalBuilder>
     {

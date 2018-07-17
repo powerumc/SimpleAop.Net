@@ -5,11 +5,15 @@ using SimpleAop.Proxies.Statments;
 
 namespace SimpleAop.Proxies.Operands
 {
-    internal class MethodOperand : Operand
+    public class MethodOperand : 
+        Operand,
+        IValuable<MethodInfo>
     {
         private ITypeProxyBuilder _typeProxyBuilder;
         private MethodInfo methodInfo;
         private Operand[] parameterOperands;
+
+        public MethodInfo Value => this.methodInfo;
 
         public MethodOperand(ITypeProxyBuilder typeProxyBuilder, ILGenerator ilGenerator, MethodInfo methodInfo)
             : base(typeProxyBuilder, ilGenerator)
@@ -76,5 +80,6 @@ namespace SimpleAop.Proxies.Operands
             // TODO PropertyOperand 추가 해야함
             throw new NotSupportedException(operand.ToString());
         }
+        
     }
 }

@@ -27,6 +27,7 @@ namespace SimpleAop.Proxies
             public static MethodAttributes Internal => MethodAttributes.Assembly;
             public static MethodAttributes Abstract => MethodAttributes.Abstract;
             public static MethodAttributes Constructor => MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
+            public static MethodAttributes Final => MethodAttributes.Final;
         }
 
         internal static class FieldAttribute

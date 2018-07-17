@@ -105,6 +105,15 @@ namespace SimpleAop.Proxies.Accessors
             }
         }
 
+        public IAccessorLambda Final
+        {
+            get
+            {
+                this.FieldAttribute |= 0;
+                return this;
+            }
+        }
+
         public bool IsPublic => (this.FieldAttribute & AttributeConstants.FieldAttribute.Public) == AttributeConstants.FieldAttribute.Public;
         public bool IsInternal => (this.FieldAttribute & AttributeConstants.FieldAttribute.Internal) == AttributeConstants.FieldAttribute.Internal;
         public bool IsStatic => (this.FieldAttribute & AttributeConstants.FieldAttribute.Static) == AttributeConstants.FieldAttribute.Static;

@@ -81,6 +81,15 @@ namespace SimpleAop.Proxies.Accessors
             }
         }
 
+        public IAccessorLambda Final
+        {
+            get
+            {
+                this.MethodAttribute |= AttributeConstants.MethodAttribute.Final;
+                return this;
+            }
+        }
+
         public IAccessorLambda Sealed
         {
             get

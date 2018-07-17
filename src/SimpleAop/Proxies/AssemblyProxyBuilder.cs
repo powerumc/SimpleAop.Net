@@ -147,6 +147,7 @@ namespace SimpleAop.Proxies
         public ITypeProxyBuilder Sealed => throw new NotImplementedException();
         public ITypeProxyBuilder Override => throw new NotImplementedException();
         public ITypeProxyBuilder Virtual => throw new NotImplementedException();
+        public ITypeProxyBuilder Final => throw new NotImplementedException();
 
         public TypeInfo ReleaseType()
         {

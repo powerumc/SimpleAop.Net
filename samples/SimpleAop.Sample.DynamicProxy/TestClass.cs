@@ -10,9 +10,6 @@ namespace SimpleAop.Sample.DynamicProxy
         void Print();
         string GetString();
         Task<string> GetStringAsync();
-        
-        void Print(string a, string b);
-        void PrintParams(string a, params string[] args);
     }
 
     public class TestClass : ITestClass
@@ -31,20 +28,6 @@ namespace SimpleAop.Sample.DynamicProxy
         {
             return Task.FromResult("Hello World 3");
         }
-
-        public void Print(string a, string b)
-        {
-            Console.WriteLine($"{a}+{b}");
-        }
-
-        public void PrintParams(string a, params string[] args)
-        {
-            Console.WriteLine(a);
-            foreach (var str in args)
-            {
-                Console.WriteLine(str);
-            }
-        }
     }
 
     [LoggingAspect]
@@ -58,15 +41,11 @@ namespace SimpleAop.Sample.DynamicProxy
         string ITestClass.GetString()
         {
             var result = default(string);
-            var invocation = new AspectInvocation
-            {
-                Method = MethodBase.GetCurrentMethod(),
-                Object = this,
-                Parameters = null
-            };
+            var method = MethodBase.GetCurrentMethod();
+            var invocation = new AspectInvocation(method, this, null);
             
             var classAttributes = GetType().GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
-            var methodAttributes = MethodBase.GetCurrentMethod().GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
+            var methodAttributes = method.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
 
             foreach (OnMethodBoundAspectAttribute attribute in classAttributes)
             {
@@ -98,14 +77,14 @@ namespace SimpleAop.Sample.DynamicProxy
             return base.GetStringAsync();
         }
 
-        void ITestClass.Print(string a, string b)
+        void test1()
         {
-            base.Print(a, b);
-        }
+            var arr = new[] {1, 2, 3, 4, 5};
 
-        void ITestClass.PrintParams(string a, params string[] args)
-        {
-            base.PrintParams(a, args);
+            foreach (var value in arr)
+            {
+                Console.WriteLine(value);
+            }
         }
     }
 }

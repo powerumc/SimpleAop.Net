@@ -74,5 +74,6 @@ namespace SimpleAop.Proxies.Statments
         public IAccessorLambda Sealed => throw new NotImplementedException();
         public IAccessorLambda Override => throw new NotImplementedException();
         public IAccessorLambda Virtual => throw new NotImplementedException();
+        public IAccessorLambda Final => throw new NotImplementedException();
     }
 }

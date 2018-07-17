@@ -12,6 +12,7 @@
         TReturn Sealed { get; }
         TReturn Override { get; }
         TReturn Virtual { get; }
+        TReturn Final { get; }
     }
 
     public interface IAccessorLambda : IAccessorLambda<IAccessorLambda>

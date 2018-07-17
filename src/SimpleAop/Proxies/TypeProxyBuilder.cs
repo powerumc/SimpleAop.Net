@@ -33,18 +33,18 @@ namespace SimpleAop.Proxies
             this.ModuleProxyBuilder = moduleProxyBuilder;
 
             // Init
-            this.typeAccessor	= new TypeAccessor(this);
+            this.typeAccessor = new TypeAccessor(this);
             this.methodAccessor = new MethodAccessor(this);
-            this.fieldAccessor	= new FieldAccessor(this);
+            this.fieldAccessor = new FieldAccessor(this);
 
             this.accessorInvocation = new AccessorInvocation(this, typeAccessor, methodAccessor, fieldAccessor);
         }
 
         private void ResetAccessorAttributes()
         {
-            this.typeAccessor.TypeAttributes	= 0;
+            this.typeAccessor.TypeAttributes = 0;
             this.methodAccessor.MethodAttribute = 0;
-            this.fieldAccessor.FieldAttribute	= 0;
+            this.fieldAccessor.FieldAttribute = 0;
         }
 
         public ITypeProxyBuilder Attribute(Type attributeType, params object[] param)
@@ -54,10 +54,11 @@ namespace SimpleAop.Proxies
 
             return this;
         }
-		
+
         public Operand Field(Type returnType, string name)
         {
-            var operand = new FieldOperand(this, null, new CriteriaMetadataInfo(returnType, name, CriteriaMetadataToken.Field));
+            var operand = new FieldOperand(this, null,
+                new CriteriaMetadataInfo(returnType, name, CriteriaMetadataToken.Field));
             operand.WriteEmit(null);
 
             return operand;
@@ -89,8 +90,8 @@ namespace SimpleAop.Proxies
         public IStatment Method(Type returnType, string name, Type[] argumentsTypes, MethodInfo parentMethodInfo)
         {
             var method = new TypeBuilderExtension(null, this.TypeBuilder)
-                .CreateMethod(this.methodAccessor.MethodAttribute, returnType, name, argumentsTypes, null, methodAccessor.IsOverride);
-
+                .CreateMethod(this.methodAccessor.MethodAttribute, returnType, name, argumentsTypes, parentMethodInfo,
+                    methodAccessor.IsOverride);
 
             return new MethodOperand(this, method.GetILGenerator(), method.GetBaseDefinition());
         }
@@ -113,7 +114,8 @@ namespace SimpleAop.Proxies
         public IStatment Constructor(IEnumerable<ParameterCriteriaMetadataInfo> parameterCriteriaMetadataInfos)
         {
             var constructorBuilder = new TypeBuilderExtension(this.ModuleProxyBuilder.ModuleBuilder, this.TypeBuilder)
-                .CreateConstructor(this.methodAccessor.MethodAttribute, CallingConventions.HasThis, parameterCriteriaMetadataInfos);
+                .CreateConstructor(this.methodAccessor.MethodAttribute, CallingConventions.HasThis,
+                    parameterCriteriaMetadataInfos);
 
             ResetAccessorAttributes();
 
@@ -142,7 +144,8 @@ namespace SimpleAop.Proxies
 
         public ITypeProxyBuilder Struct(string name)
         {
-            this.typeAccessor.TypeAttributes = this.typeAccessor.TypeAttributes | AttributeConstants.TypeAttribute.Struct;
+            this.typeAccessor.TypeAttributes =
+                this.typeAccessor.TypeAttributes | AttributeConstants.TypeAttribute.Struct;
 
             return this.Class(name);
         }
@@ -176,17 +179,105 @@ namespace SimpleAop.Proxies
             }
 
             return this.TypeBuilder.CreateTypeInfo();
-        } 
+        }
 
-        public ITypeProxyBuilder Public		{ get { var temp = this.accessorInvocation.Public; return this; } }
-        public ITypeProxyBuilder Internal		{ get { var temp = this.accessorInvocation.Internal; return this; } }
-        public ITypeProxyBuilder Protected	{ get { var temp = this.accessorInvocation.Protected; return this; } }
-        public ITypeProxyBuilder Private		{ get { var temp = this.accessorInvocation.Private; return this; } }
-        public ITypeProxyBuilder Static		{ get { var temp = this.accessorInvocation.Static; return this; } }
-        public ITypeProxyBuilder ReadOnly		{ get { var temp = this.accessorInvocation.ReadOnly; return this; } }
-        public ITypeProxyBuilder Abstract		{ get { var temp = this.accessorInvocation.Abstract; return this; } }
-        public ITypeProxyBuilder Sealed		{ get { var temp = this.accessorInvocation.Sealed; return this; } }
-        public ITypeProxyBuilder Override		{ get { var temp = this.accessorInvocation.Override; return this; } }
-        public ITypeProxyBuilder Virtual		{ get { var temp = this.accessorInvocation.Virtual; return this; } }
+        public ITypeProxyBuilder Public
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Public;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Internal
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Internal;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Protected
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Protected;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Private
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Private;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Static
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Static;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder ReadOnly
+        {
+            get
+            {
+                var temp = this.accessorInvocation.ReadOnly;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Abstract
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Abstract;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Sealed
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Sealed;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Override
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Override;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Virtual
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Virtual;
+                return this;
+            }
+        }
+
+        public ITypeProxyBuilder Final
+        {
+            get
+            {
+                var temp = this.accessorInvocation.Final;
+                return this;
+            }
+        }
     }
 }

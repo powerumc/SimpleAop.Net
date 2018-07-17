@@ -95,5 +95,10 @@ namespace SimpleAop.Proxies
         {
             get { return this.InvokeAccessor(o => o.Virtual); }
         }
+
+        public IAccessorLambda Final
+        {
+            get { return this.InvokeAccessor(o => o.Final); }
+        }
     }
 }

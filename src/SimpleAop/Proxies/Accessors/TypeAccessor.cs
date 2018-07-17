@@ -96,6 +96,15 @@ namespace SimpleAop.Proxies.Accessors
             }
         }
 
+        public IAccessorLambda Final
+        {
+            get
+            {
+                this.TypeAttributes |= 0;
+                return this;
+            }
+        }
+
         public IAccessorLambda ReadOnly
         {
             get

@@ -4,8 +4,8 @@ namespace SimpleAop
 {
     public interface IAspectInvocation
     {
-        object[] Parameters { get; set; }
-        MethodBase Method { get; set; }
-        object Object { get; set; }
+        object[] Parameters { get; }
+        MethodBase Method { get; }
+        object Object { get; }
     }
 }
