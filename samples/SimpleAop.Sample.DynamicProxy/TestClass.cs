@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace SimpleAop.Sample.DynamicProxy
         void Print();
         string GetString();
         Task<string> GetStringAsync();
+        IEnumerable<string> GetStringEnumerable();
     }
 
     public class TestClass : ITestClass
@@ -28,6 +30,13 @@ namespace SimpleAop.Sample.DynamicProxy
         {
             return Task.FromResult("Hello World 3");
         }
+
+        public IEnumerable<string> GetStringEnumerable()
+        {
+            yield return "A";
+            yield return "B";
+            yield return "C";
+        }
     }
 
     [LoggingAspect]
@@ -44,7 +53,7 @@ namespace SimpleAop.Sample.DynamicProxy
             var method = MethodBase.GetCurrentMethod();
             var invocation = new AspectInvocation(method, this, null);
             
-            var classAttributes = GetType().GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
+            var classAttributes = GetType().BaseType.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
             var methodAttributes = method.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
 
             foreach (OnMethodBoundAspectAttribute attribute in classAttributes)

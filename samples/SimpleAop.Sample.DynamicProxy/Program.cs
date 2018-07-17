@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 using SimpleAop.Proxies;
-using SimpleAop.Proxies.Operands;
+using SimpleAop.Proxies.Extensions;
 
 namespace SimpleAop.Sample.DynamicProxy
 {
@@ -14,54 +14,68 @@ namespace SimpleAop.Sample.DynamicProxy
         {
             var assembly = new AssemblyProxyBuilder().Assembly("A");
             var module = assembly.Module("B");
-            var @class = module.Class("C", typeof(TestClass), new Type[] {typeof(ITestClass)});
+            var @class = module.Class("C", typeof(TestClass), new[] {typeof(ITestClass)});
 
-            Print(@class);
+            Print(@class, typeof(ITestClass), typeof(TestClass));
         }
 
-        private static void Print(ITypeProxyBuilder @class)
+        private static void Print(TypeBuilder @class, Type interfaceType, Type implementType)
         {
-            foreach (var method in typeof(ITestClass).GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var method in interfaceType.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                var mparams = method.GetParameters().Select(o => o.ParameterType).ToArray();
-                var m = @class.TypeBuilder.DefineMethod($"{method.DeclaringType.Name}.{method.Name}",
+                var methodParams = method.GetParameters().Select(o => o.ParameterType).ToArray();
+                var m = @class.DefineMethod($"_{method.DeclaringType.Name}.{method.Name}_",
                     MethodAttributes.Private | MethodAttributes.Final | MethodAttributes.HideBySig |
                     MethodAttributes.Virtual | MethodAttributes.NewSlot,
                     CallingConventions.HasThis,
                     method.ReturnType,
-                    mparams);
+                    methodParams);
                 
-                @class.TypeBuilder.DefineMethodOverride(m, typeof(ITestClass).GetMethod(method.Name, mparams));
+                @class.DefineMethodOverride(m, interfaceType.GetMethod(method.Name, methodParams));
 
                 var il = m.GetILGenerator();
 
-                if (method.ReturnType != typeof(void))
-                {
-                    il.DeclareLocal(method.ReturnType); // var result;
-                }
+                var localReturnValue = il.DeclareReturnValue(method);
+                var localCurrentMethod = il.DeclareLocal(typeof(MethodBase));
+                var localAspectInvocation = il.DeclareLocal(typeof(AspectInvocation));
+                var localClassAttributes = il.DeclareLocal(typeof(object[]));
+                var localLoop = il.DeclareLocal(typeof(int));
+                
+                il.Call(typeof(MethodBase).GetMethod(nameof(MethodBase.GetCurrentMethod)));
+                il.Emit(OpCodes.Stloc, localCurrentMethod);
+                
+                // var aspectInvocation = new AspectInvocation(method, this, null);
+                il.Emit(OpCodes.Ldloc, localCurrentMethod);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldnull);
+                il.New(typeof(AspectInvocation).GetConstructors()[0]);
+                il.Emit(OpCodes.Stloc, localAspectInvocation);
+                
+                // this.GetType().GetCustomAttributes(typeof(OnMethodBoundAspectAttribute));
+                var methodGetType = implementType.GetMethod("GetType");
+                il.Emit(OpCodes.Ldarg_0);
+                il.Call(methodGetType);
+                il.Emit(OpCodes.Ldtoken, typeof(OnMethodBoundAspectAttribute));
+                il.Call(typeof(Type).GetMethod("GetTypeFromHandle"));
+                il.Emit(OpCodes.Ldc_I4_0);
+                il.CallVirt(methodGetType.ReturnType.GetMethod("GetCustomAttributes", new[] {typeof(Type), typeof(bool)}));
+                il.Emit(OpCodes.Stloc, localClassAttributes);
+                
+                
+                
+                
+                
+                
+                
                 
                 il.EmitWriteLine("THIS IS RESULT BY IL GENERATOR");
-                
-                il.Emit(OpCodes.Ldarg_0);
+                il.LoadParameters(method);
+                il.Call(implementType.GetMethod(method.Name, methodParams));
 
-                for (var i = 1; i <= method.GetParameters().Length; i++)
-                {
-                    il.Emit(OpCodes.Ldarg, i);
-                }
-                
-                il.Emit(OpCodes.Call, typeof(TestClass).GetMethod(method.Name, mparams));
-
-                if (method.ReturnType != typeof(void))
-                {
-                    il.Emit(OpCodes.Stloc_0);
-                    il.Emit(OpCodes.Ldloc_0);
-                }
-                
-                il.Emit(OpCodes.Ret);
-
+                il.Return(method, localReturnValue);
             }
 
-            var type = @class.ReleaseType();
+            var type = @class.CreateType();
             var obj = (ITestClass)Activator.CreateInstance(type);
             obj.Print();
 
