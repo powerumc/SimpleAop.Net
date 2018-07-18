@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SimpleAop.Extensions.DependencyInjection\SimpleAop.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\SimpleAop\SimpleAop.csproj" />
+  </ItemGroup>
+</Project>

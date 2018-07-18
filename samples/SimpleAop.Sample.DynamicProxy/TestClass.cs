@@ -17,6 +17,11 @@ namespace SimpleAop.Sample.DynamicProxy
 
     public class TestClass : ITestClass
     {
+        public TestClass(string a, string b)
+        {
+            
+        }
+        
         [LoggingAspect]
         public void Print()
         {
@@ -37,6 +42,14 @@ namespace SimpleAop.Sample.DynamicProxy
         public void Test(string a, object b, int c)
         {
             Console.WriteLine("Hello World Test");
+        }
+    }
+
+    public class ProxyTestClass : TestClass
+    {
+        public ProxyTestClass(string a, string b) : base(a, b)
+        {
+            
         }
     }
 }

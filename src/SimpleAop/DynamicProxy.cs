@@ -31,17 +31,38 @@ namespace SimpleAop
 
         public Type CreateProxy()
         {
+            foreach (var constructor in _implementationType.GetConstructors())
+            {
+                var constructorTypes = constructor.GetParameters().Select(o => o.ParameterType).ToArray();
+                var c = _typeBuilder.DefineConstructor(
+                    MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.RTSpecialName | MethodAttributes.SpecialName,
+                    CallingConventions.Standard,
+                    constructorTypes);
+
+                var il = c.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+
+                for (var i = 0; i < constructorTypes.Length; i++)
+                {
+                    il.Emit(OpCodes.Ldarg, i + 1);
+                }
+
+                il.Call(_implementationType.GetConstructor(constructorTypes));
+                il.Emit(OpCodes.Nop);
+                il.Emit(OpCodes.Ret);
+            }
+            
             foreach (var method in _interfaceType.GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                var methodParams = method.GetParameters().Select(o => o.ParameterType).ToArray();
+                var methodTypes = method.GetParameters().Select(o => o.ParameterType).ToArray();
                 var m = _typeBuilder.DefineMethod($"{method.Name}",
                     MethodAttributes.Private | MethodAttributes.Final | MethodAttributes.HideBySig |
                     MethodAttributes.Virtual | MethodAttributes.NewSlot,
                     CallingConventions.HasThis,
                     method.ReturnType,
-                    methodParams);
+                    methodTypes);
                 
-                _typeBuilder.DefineMethodOverride(m, _interfaceType.GetMethod(method.Name, methodParams));
+                _typeBuilder.DefineMethodOverride(m, _interfaceType.GetMethod(method.Name, methodTypes));
                 
                 var il = m.GetILGenerator();
                 var localReturnValue = il.DeclareReturnValue(method);
@@ -61,18 +82,18 @@ namespace SimpleAop
                 
                 
                 // var parameters = new[] {a, b, c};
-                il.Emit(OpCodes.Ldc_I4, methodParams.Length);
+                il.Emit(OpCodes.Ldc_I4, methodTypes.Length);
                 il.Emit(OpCodes.Newarr, typeof(object));
-                if (methodParams.Length > 0)
+                if (methodTypes.Length > 0)
                 {
-                    for (var i = 0; i < methodParams.Length; i++)
+                    for (var i = 0; i < methodTypes.Length; i++)
                     {
                         il.Emit(OpCodes.Dup);
                         il.Emit(OpCodes.Ldc_I4, i);
                         il.Emit(OpCodes.Ldarg, i + 1);
-                        if (methodParams[i].IsValueType)
+                        if (methodTypes[i].IsValueType)
                         {
-                            il.Emit(OpCodes.Box, methodParams[i].UnderlyingSystemType);
+                            il.Emit(OpCodes.Box, methodTypes[i].UnderlyingSystemType);
                         }
 
                         il.Emit(OpCodes.Stelem_Ref);
@@ -116,7 +137,7 @@ namespace SimpleAop
                 il.Emit(OpCodes.Nop);
                 
                 il.LoadParameters(method);
-                il.Call(_implementationType.GetMethod(method.Name, methodParams));
+                il.Call(_implementationType.GetMethod(method.Name, methodTypes));
                 
                 // methodAttributes.ForEachOnAfter(invocation);
                 il.Emit(OpCodes.Ldloc, localMethodAttributes);

@@ -16,7 +16,7 @@ namespace SimpleAop.Sample.DynamicProxy
         {
             var type = DynamicProxyFactory.Create(typeof(ITestClass), typeof(TestClass));
 
-            var obj = (ITestClass) Activator.CreateInstance(type);
+            var obj = (ITestClass) Activator.CreateInstance(type, "A", "B");
             obj.Test("A", "B", 3);
         }
     }

@@ -41,6 +41,11 @@ namespace SimpleAop.Proxies.Extensions
             il.Emit(OpCodes.Call, method);
         }
 
+        public static void Call(this ILGenerator il, ConstructorInfo constructor)
+        {
+            il.Emit(OpCodes.Call, constructor);
+        }
+
         public static void CallVirt(this ILGenerator il, MethodInfo method)
         {
             il.Emit(OpCodes.Callvirt, method);
