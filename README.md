@@ -115,6 +115,6 @@ services.AddSingletonWithProxy<ITestService, TestService>();
 I did make `SimpleAop.Sample.AspNetCoreWeb` project. Let's run it.
 
 
-## Have a issues?
+## Have a issue?
 
 https://github.com/powerumc/SimpleAop/issues
