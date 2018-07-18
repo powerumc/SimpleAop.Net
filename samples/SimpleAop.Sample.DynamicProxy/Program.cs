@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Threading.Tasks;
-using SimpleAop.Extensions;
-using SimpleAop.Proxies;
-using SimpleAop.Proxies.Extensions;
 
 namespace SimpleAop.Sample.DynamicProxy
 {
