@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.0.0.3</Version>
+    <Version>2.0.0.5</Version>
     <Authors>Junil Um</Authors>
     <PackageLicenseUrl>https://github.com/powerumc/SimpleAop/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/powerumc/SimpleAop</PackageProjectUrl>
@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
-    <PackageReference Include="SimpleAop" Version="2.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleAop\SimpleAop.csproj" />
   </ItemGroup>
 </Project>
