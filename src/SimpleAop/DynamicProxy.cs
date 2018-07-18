@@ -31,14 +31,14 @@ namespace SimpleAop
 
         public Type CreateProxy()
         {
-            foreach (var constructor in _implementationType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic))
+            foreach (var constructor in _implementationType.GetConstructors())
             {
                 var constructorTypes = constructor.GetParameters().Select(o => o.ParameterType).ToArray();
                 var c = _typeBuilder.DefineConstructor(
                     MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.RTSpecialName | MethodAttributes.SpecialName,
                     CallingConventions.Standard,
                     constructorTypes);
-
+                
                 var il = c.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
 
@@ -47,7 +47,7 @@ namespace SimpleAop
                     il.Emit(OpCodes.Ldarg, i + 1);
                 }
 
-                il.Call(_implementationType.GetConstructor(constructorTypes));
+                il.Call(_implementationType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, constructorTypes, null));
                 il.Emit(OpCodes.Nop);
                 il.Emit(OpCodes.Ret);
             }
