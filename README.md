@@ -112,7 +112,9 @@ In `Startup.cs` file,
 services.AddSingletonWithProxy<ITestService, TestService>();
 ```
 
-I did make `SimpleAop.Sample.AspNetCoreWeb` project. Let's run it.
+I did make `SimpleAop.Sample.AspNetCoreWeb` project. 
+
+Let's run it, and **watch the console log**.
 
 
 ## Have a issue?
