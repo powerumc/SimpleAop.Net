@@ -47,7 +47,7 @@ namespace SimpleAop
                     il.Emit(OpCodes.Ldarg, i + 1);
                 }
 
-                il.Call(_implementationType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, constructorTypes, null));
+                il.Call(constructor);
                 il.Emit(OpCodes.Nop);
                 il.Emit(OpCodes.Ret);
             }
