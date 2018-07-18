@@ -7,20 +7,20 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddTransientWithProxy<TInterface, TImplementation>(this IServiceCollection serviceCollection)
         {
-            return Add(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Transient);
+            return AddWithProxy(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Transient);
         }
         
         public static IServiceCollection AddScopedWithProxy<TInterface, TImplementation>(this IServiceCollection serviceCollection)
         {
-            return Add(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Scoped);
+            return AddWithProxy(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Scoped);
         }
         
         public static IServiceCollection AddSingletonWithProxy<TInterface, TImplementation>(this IServiceCollection serviceCollection)
         {
-            return Add(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Singleton);
+            return AddWithProxy(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Singleton);
         }
 
-        public static IServiceCollection Add(this IServiceCollection collection, Type interfaceType, Type implementationType, ServiceLifetime lifetime)
+        public static IServiceCollection AddWithProxy(this IServiceCollection collection, Type interfaceType, Type implementationType, ServiceLifetime lifetime)
         {
             var proxyType = DynamicProxyFactory.Create(interfaceType, implementationType);
             var serviceDescriptor = new ServiceDescriptor(interfaceType, proxyType, lifetime);
