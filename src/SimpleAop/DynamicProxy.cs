@@ -31,7 +31,7 @@ namespace SimpleAop
 
         public Type CreateProxy()
         {
-            foreach (var constructor in _implementationType.GetConstructors())
+            foreach (var constructor in _implementationType.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic ))
             {
                 var constructorTypes = constructor.GetParameters().Select(o => o.ParameterType).ToArray();
                 var c = _typeBuilder.DefineConstructor(
