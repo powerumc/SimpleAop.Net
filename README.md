@@ -77,6 +77,19 @@ public class LoggingAspectAttribute : OnMethodBoundAspectAttribute
 }
 ``` 
 
+And add logging attribute,
+
+```csharp
+[LoggingAspect]
+public class Print : IPrint
+{
+    public void PrintMessage(string message)
+    {
+        Console.WriteLine(message);
+    }
+}
+```
+
 So result is,
 
 ```
