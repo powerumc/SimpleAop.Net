@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             return Add(serviceCollection, typeof(TInterface), typeof(TImplementation), ServiceLifetime.Singleton);
         }
 
-        private static IServiceCollection Add(IServiceCollection collection, Type interfaceType, Type implementationType, ServiceLifetime lifetime)
+        public static IServiceCollection Add(this IServiceCollection collection, Type interfaceType, Type implementationType, ServiceLifetime lifetime)
         {
             var proxyType = DynamicProxyFactory.Create(interfaceType, implementationType);
             var serviceDescriptor = new ServiceDescriptor(interfaceType, proxyType, lifetime);
