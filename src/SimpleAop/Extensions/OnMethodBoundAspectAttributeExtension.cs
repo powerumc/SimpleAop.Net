@@ -49,6 +49,9 @@ namespace SimpleAop.Extensions
             
             if (currentMethod.DeclaringType == null)
                 throw new NullReferenceException(nameof(currentMethod.DeclaringType));
+
+            if (currentMethod.DeclaringType.BaseType == null)
+                throw new NullReferenceException(nameof(currentMethod.DeclaringType.BaseType));
             
             return currentMethod.DeclaringType.BaseType.GetMethod(currentMethod.Name, currentMethod.GetParameters().Select(o => o.ParameterType).ToArray());
         }

@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 
 namespace SimpleAop.Proxies.Extensions
 {
-    public static class ILGeneratorExtensions
+    internal static class ILGeneratorExtensions
     {
         public static LocalBuilder DeclareReturnValue(this ILGenerator il, MethodInfo method)
         {
