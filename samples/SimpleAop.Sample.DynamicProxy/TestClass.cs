@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using SimpleAop.Extensions;
 
 namespace SimpleAop.Sample.DynamicProxy
 {
@@ -11,11 +12,12 @@ namespace SimpleAop.Sample.DynamicProxy
         void Print();
         string GetString();
         Task<string> GetStringAsync();
-        IEnumerable<string> GetStringEnumerable();
+        void Test(string a, object b, int c, List<string> d);
     }
 
     public class TestClass : ITestClass
     {
+        [LoggingAspect]
         public void Print()
         {
             Console.WriteLine("Hello World 1");
@@ -31,15 +33,16 @@ namespace SimpleAop.Sample.DynamicProxy
             return Task.FromResult("Hello World 3");
         }
 
-        public IEnumerable<string> GetStringEnumerable()
+        [LoggingAspect]
+        public void Test(string a, object b, int c, List<string> d)
         {
-            yield return "A";
-            yield return "B";
-            yield return "C";
+            var arr = new object[] {a, b, c, d};
+
+            var method = MethodBase.GetCurrentMethod();
+            var baseMethod = method.GetCustomAttributeOnBaseMethod();
         }
     }
 
-    [LoggingAspect]
     public class ProxyTestClass : TestClass, ITestClass
     {
         void ITestClass.Print()
@@ -52,28 +55,30 @@ namespace SimpleAop.Sample.DynamicProxy
             var result = default(string);
             var method = MethodBase.GetCurrentMethod();
             var invocation = new AspectInvocation(method, this, null);
-            
-            var classAttributes = GetType().BaseType.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
-            var methodAttributes = method.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false);
 
-            foreach (OnMethodBoundAspectAttribute attribute in classAttributes)
+            
+            var classAttributes = GetType().GetOnMethodBoundAspectAttributes();
+            var methodAttributes = method.GetOnMethodBoundAspectAttributes();
+
+            classAttributes.ForEachOnBefore(invocation);
+            
+            foreach (var attribute in classAttributes)
             {
                 attribute.OnBefore(invocation);
             }
-
-            foreach (OnMethodBoundAspectAttribute attribute in methodAttributes)
+            foreach (var attribute in methodAttributes)
             {
                 attribute.OnBefore(invocation);
             }
 
             result = base.GetString();
             
-            foreach (OnMethodBoundAspectAttribute attribute in classAttributes)
+            foreach (var attribute in classAttributes)
             {
                 attribute.OnAfter(invocation);
             }
             
-            foreach (OnMethodBoundAspectAttribute attribute in methodAttributes)
+            foreach (var attribute in methodAttributes)
             {
                 attribute.OnAfter(invocation);
             }

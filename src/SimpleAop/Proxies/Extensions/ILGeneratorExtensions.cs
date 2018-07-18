@@ -20,8 +20,8 @@ namespace SimpleAop.Proxies.Extensions
         {
             if (method.ReturnType != typeof(void))
             {
-                il.Emit(OpCodes.Stloc_0);
-                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Stloc, local);
+                il.Emit(OpCodes.Ldloc, local);
             }
                 
             il.Emit(OpCodes.Ret);
