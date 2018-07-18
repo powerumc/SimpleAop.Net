@@ -12,7 +12,7 @@ namespace SimpleAop.Sample.DynamicProxy
         void Print();
         string GetString();
         Task<string> GetStringAsync();
-        void Test(string a, object b, int c, List<string> d);
+        void Test(string a, object b, int c);
     }
 
     public class TestClass : ITestClass
@@ -34,71 +34,9 @@ namespace SimpleAop.Sample.DynamicProxy
         }
 
         [LoggingAspect]
-        public void Test(string a, object b, int c, List<string> d)
+        public void Test(string a, object b, int c)
         {
-            var arr = new object[] {a, b, c, d};
-
-            var method = MethodBase.GetCurrentMethod();
-            var baseMethod = method.GetCustomAttributeOnBaseMethod();
-        }
-    }
-
-    public class ProxyTestClass : TestClass, ITestClass
-    {
-        void ITestClass.Print()
-        {
-            base.Print();
-        }
-
-        string ITestClass.GetString()
-        {
-            var result = default(string);
-            var method = MethodBase.GetCurrentMethod();
-            var invocation = new AspectInvocation(method, this, null);
-
-            
-            var classAttributes = GetType().GetOnMethodBoundAspectAttributes();
-            var methodAttributes = method.GetOnMethodBoundAspectAttributes();
-
-            classAttributes.ForEachOnBefore(invocation);
-            
-            foreach (var attribute in classAttributes)
-            {
-                attribute.OnBefore(invocation);
-            }
-            foreach (var attribute in methodAttributes)
-            {
-                attribute.OnBefore(invocation);
-            }
-
-            result = base.GetString();
-            
-            foreach (var attribute in classAttributes)
-            {
-                attribute.OnAfter(invocation);
-            }
-            
-            foreach (var attribute in methodAttributes)
-            {
-                attribute.OnAfter(invocation);
-            }
-            
-            return result;
-        }
-
-        Task<string> ITestClass.GetStringAsync()
-        {
-            return base.GetStringAsync();
-        }
-
-        void test1()
-        {
-            var arr = new[] {1, 2, 3, 4, 5};
-
-            foreach (var value in arr)
-            {
-                Console.WriteLine(value);
-            }
+            Console.WriteLine("Hello World Test");
         }
     }
 }
