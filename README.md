@@ -60,7 +60,7 @@ The `type` generate random character from the `Guid`. It's just first SimpleAop 
 
 ## Aop Programming
 
-Additionally, provider `OnMethodBoundAspect` attribute class. We just inherite it.
+Additionally, provider `OnMethodBoundAspect` attribute class. We just inherites it.
 
 ```csharp
 public class LoggingAspectAttribute : OnMethodBoundAspectAttribute
@@ -102,6 +102,6 @@ services.AddSingletonWithProxy<ITestService, TestService>();
 I did make `SimpleAop.Sample.AspNetCoreWeb` project. Let's run it.
 
 
-### Have a issues?
+## Have a issues?
 
 https://github.com/powerumc/SimpleAop/issues
