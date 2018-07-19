@@ -102,6 +102,7 @@ Hello World
 
 Provide some methods is,
 
+- AddWithProxy
 - AddTransientWithProxy
 - AddScopedWithProxy
 - AddSingletonWithProxy
