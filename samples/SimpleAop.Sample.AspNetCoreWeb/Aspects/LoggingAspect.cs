@@ -4,7 +4,7 @@ namespace SimpleAop.Sample.AspNetCoreWeb.Aspects
 {
     public class LoggingAspect : OnMethodBoundAspectAttribute
     {
-        public override void OnBefore(IAspectInvocation invocation)
+        public override void OnBeforeAsync(IAspectInvocation invocation)
         {
             Console.WriteLine("-------------- Before Logging Aspect -------------");
             Console.WriteLine($"Method: {invocation.Method}");
@@ -12,7 +12,7 @@ namespace SimpleAop.Sample.AspNetCoreWeb.Aspects
             Console.WriteLine($"Paramters: {string.Join(",", invocation.Parameters)}");
         }
 
-        public override void OnAfter(IAspectInvocation invocation)
+        public override void OnAfterAsync(IAspectInvocation invocation)
         {
             Console.WriteLine("-------------- After Logging Aspect --------------");
         }

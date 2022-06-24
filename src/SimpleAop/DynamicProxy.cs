@@ -127,13 +127,13 @@ namespace SimpleAop
                 // classAttributes.ForEachOnBefore(invocation);
                 il.Emit(OpCodes.Ldloc, localClassAttributes);
                 il.Emit(OpCodes.Ldloc, localAspectInvocation);
-                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnBefore)));
+                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnBeforeAsync)));
                 il.Emit(OpCodes.Nop);
                 
                 // methodAttributes.ForEachOnBefore(invocation);
                 il.Emit(OpCodes.Ldloc, localMethodAttributes);
                 il.Emit(OpCodes.Ldloc, localAspectInvocation);
-                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnBefore)));
+                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnBeforeAsync)));
                 il.Emit(OpCodes.Nop);
                 
                 il.LoadParameters(method);
@@ -142,13 +142,13 @@ namespace SimpleAop
                 // methodAttributes.ForEachOnAfter(invocation);
                 il.Emit(OpCodes.Ldloc, localMethodAttributes);
                 il.Emit(OpCodes.Ldloc, localAspectInvocation);
-                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnAfter)));
+                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnAfterAsync)));
                 il.Emit(OpCodes.Nop);
                 
                 // classAttributes.ForEachOnAfter(invocation);
                 il.Emit(OpCodes.Ldloc, localClassAttributes);
                 il.Emit(OpCodes.Ldloc, localAspectInvocation);
-                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnAfter)));
+                il.Call(typeof(OnMethodBoundAspectAttributeExtension).GetMethod(nameof(OnMethodBoundAspectAttributeExtension.ForEachOnAfterAsync)));
                 il.Emit(OpCodes.Nop);
                 
                 il.Return(method, localReturnValue);

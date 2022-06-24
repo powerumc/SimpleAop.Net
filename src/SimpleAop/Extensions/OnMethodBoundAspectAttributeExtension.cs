@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SimpleAop.Extensions
 {
     public static class OnMethodBoundAspectAttributeExtension
     {
-        public static OnMethodBoundAspectAttribute[] GetOnMethodBoundAspectAttributes(this Type type)
+        public static IEnumerable<OnMethodBoundAspectAttribute> GetOnMethodBoundAspectAttributes(this Type type)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
@@ -15,30 +16,48 @@ namespace SimpleAop.Extensions
             if (type.BaseType == null)
                 throw new NullReferenceException(nameof(type.BaseType));
                 
-            return type.BaseType.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false).Cast<OnMethodBoundAspectAttribute>().ToArray();
+            return type.BaseType
+                .GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false)
+                .Cast<OnMethodBoundAspectAttribute>();
         }
         
-        public static OnMethodBoundAspectAttribute[] GetOnMethodBoundAspectAttributes(this MethodBase method)
+        public static IEnumerable<OnMethodBoundAspectAttribute> GetOnMethodBoundAspectAttributes(this MethodBase method)
         {
             if (method == null)
                 throw new ArgumentNullException(nameof(method));
             
-            return method.GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false).Cast<OnMethodBoundAspectAttribute>().ToArray();
+            return method
+                .GetCustomAttributes(typeof(OnMethodBoundAspectAttribute), false)
+                .Cast<OnMethodBoundAspectAttribute>();
         }
         
-        public static void ForEachOnBefore(this OnMethodBoundAspectAttribute[] attributes, IAspectInvocation invocation)
+        public static async Task ForEachOnBeforeAsync(this IEnumerable<OnMethodBoundAspectAttribute> attributes, IAspectInvocation invocation)
         {
-            foreach (var attribute in attributes)
+            if (attributes.All(attr => attr.IsAwait))
             {
-                attribute.OnBefore(invocation);
+                foreach (var attribute in attributes)
+                {
+                    await attribute.OnBeforeAsync(invocation);
+                }
+            }
+            else
+            {
+                await Task.WhenAll(attributes.Select(attr => attr.OnBeforeAsync(invocation)));
             }
         }
         
-        public static void ForEachOnAfter(this OnMethodBoundAspectAttribute[] attributes, IAspectInvocation invocation)
+        public static async Task ForEachOnAfterAsync(this IEnumerable<OnMethodBoundAspectAttribute> attributes, IAspectInvocation invocation)
         {
-            foreach (var attribute in attributes)
+            if (attributes.All(attr => attr.IsAwait))
             {
-                attribute.OnAfter(invocation);
+                foreach (var attribute in attributes)
+                {
+                    await attribute.OnAfterAsync(invocation);
+                }
+            }
+            else
+            {
+                await Task.WhenAll(attributes.Select(attr => attr.OnAfterAsync(invocation)));
             }
         }
 
@@ -52,8 +71,10 @@ namespace SimpleAop.Extensions
 
             if (currentMethod.DeclaringType.BaseType == null)
                 throw new NullReferenceException(nameof(currentMethod.DeclaringType.BaseType));
+
+            var parameterTypes = currentMethod.GetParameters().Select(o => o.ParameterType).ToArray();
             
-            return currentMethod.DeclaringType.BaseType.GetMethod(currentMethod.Name, currentMethod.GetParameters().Select(o => o.ParameterType).ToArray());
+            return currentMethod.DeclaringType.BaseType.GetMethod(currentMethod.Name, parameterTypes);
         }
     }
 }
